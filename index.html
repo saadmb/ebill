@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        body {
+            margin: 20px 0;
+        }
+
+        #shotoor td {
+            padding: 0 10px;
+        }
+
+        input[type="number"] {
+            width: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div style="width: 400px; margin: 0 auto; font-size: 16pt; direction:rtl;">
+
+            <table style="margin: 0 auto;">
+                <tr>
+                    <td>العداد الأساسي: </td>
+                    <td>
+                        <input v-model="mainKW" type="number" />
+                    </td>
+                    <td rowspan="2">
+                         <button @click="calculate" :disabled="!mainKW" style="font-size: 14pt;">احتساب</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>عداد المستأجر: </td>
+                    <td>
+                        <input v-model="renterKW" type="number" />
+                    </td>
+                </tr>
+            </table>
+
+            <br>
+
+            <table v-if="totalBillValue" style="margin: 0 auto; border: 1px solid #666666; border-radius: 3px;">
+                <tr>
+                    <td>
+                        <table id="shotoor">
+                            <tr style="font-weight: bold;">
+                                <td>الشطر</td>
+                                <td>سعر الوحدة</td>
+                                <td>قيمة الشطور</td>
+                            </tr>
+                            <tr v-for="(item, index) in shotoor">
+                                <td>{{ item.value }}</td>
+                                <td>{{ item.cost }}</td>
+                                <td>{{ (item.value * item.cost) }}</td>
+                                <td v-if="index == shotoor.length - 1">+</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <hr>
+                                </td>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td colspan="2">
+                                    مجموع قيمة الشطور
+                                </td>
+                                <td>{{ totalKwValue }}</td>
+                                <td>=</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    قيمة الرسوم
+                                </td>
+                                <td>{{ fee }}</td>
+                                <td>+</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <hr>
+                                </td>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td colspan="2">
+                                    مجموع خدمات الطاقة 
+                                </td>
+                                <td>{{ (totalKwValue + fee) }}</td>
+                                <td>=</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    TVA
+                                </td>
+                                <td>{{ tva + '%' }}</td>
+                                <td>{{ (totalKwValue + fee) * tva / 100 }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">طابع</td>
+                                <td>{{ stamp }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">تدوير الألف</td>
+                                <td>{{ tadweer }}</td>
+                                <td>+</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <hr>
+                                </td>
+                            </tr>
+                            <tr style="font-weight: bold; color:darkgreen">
+                                <td colspan="2">
+                                    الفاتورة الكاملة 
+                                </td>
+                                <td>{{ totalBillValue }}</td>
+                                <td>=</td>
+                            </tr>
+                            <tr style="font-weight: bold; color:firebrick;">
+                                <td colspan="2">
+                                   فاتورة المستأجر 
+                                </td>
+                                <td>{{ renterBillValue }}</td>
+                                <td style="font-weight: normal;font-size: 12pt;padding:0">{{ renterRate }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                mainKW: null,
+                renterKW: null,
+                totalKwValue: null,
+                totalBillValue: null,
+                fee: 31600,
+                tva: 11,
+                stamp: 1000,
+                tadweer: null,
+                shotoor: []
+            },
+            computed: {
+                renterBillValue: function() {
+                    return Math.ceil((this.renterKW / this.mainKW) * this.totalBillValue);
+                },
+                renterRate: function() {
+                    return Math.round(this.renterKW * 100 / this.mainKW) + '%';
+                }
+            },
+            methods: {
+                calculate: function() {
+                    let x = this.mainKW;
+
+                    let totalKwValue = 0;
+                    let str = '';
+
+                    if (x <= 200) {
+                        totalKwValue = x * 35;
+                        str = x + ',35';
+                    }
+                    else if (x > 200 && x <= 600) {
+                        totalKwValue = (200 * 35) + ((x - 200) * 55);
+                        str = '200,35;' + (x - 200) + ',55';
+                    }
+                    else if (x > 600 && x <= 800) {
+                        totalKwValue = (200 * 35) + (400 * 55) + ((x - 600) * 80);
+                        str = '200,35;400,55;' + (x - 600) + ',80';
+                    }
+                    else if (x > 800 && x <= 1000) {
+                        totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + ((x - 800) * 120);
+                        str = '200,35;400,55;200,80;' + (x - 800) + ',120';
+                    }
+                    else {
+                        totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + (200 * 120) + ((x - 1000) * 200);
+                        str = '200,35;400,55;200,80;200,120;' + (x - 1000) + ',200';
+                    }
+
+                    this.totalKwValue = totalKwValue;
+
+                    let total = ((totalKwValue + this.fee) * (1 + (this.tva / 100))) + 1000;
+
+                    this.totalBillValue = Math.ceil(total / 1000) * 1000;
+
+                    this.tadweer = this.totalBillValue - Math.floor(total);
+
+                    this.shotoor = str.split(';').map((v) => {
+                        let tempAr = v.split(',');
+                        return { value: tempAr[0], cost: tempAr[1] };
+                    }).reverse();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
