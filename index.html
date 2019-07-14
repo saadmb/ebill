@@ -29,6 +29,12 @@
             direction: ltr;
             font-size: 12pt;
         }
+
+        button {
+            font-size: 18pt;
+            width: 56px;
+            height: 56px;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -38,14 +44,14 @@
     <div id="app">
         <div style="width: 400px; margin: 0 auto; font-size: 16pt; direction:rtl;">
 
-            <table style="margin: 0 auto;">
+            <table style="margin: 0 auto; width: 90%;">
                 <tr>
                     <td>الاستهلاك الأساسي (KW): </td>
                     <td>
                         <input v-model="mainKW" type="number" />
                     </td>
                     <td rowspan="2">
-                        <button @click="calculate" :disabled="!mainKW" style="font-size: 12pt;">احتساب</button>
+                        <button @click="calculate" :disabled="!mainKW">💸</button>
                     </td>
                 </tr>
                 <tr>
@@ -172,27 +178,47 @@
                     let x = this.mainKW;
 
                     let totalKwValue = 0;
-                    let str = '';
+                    let shotoor = [];
 
                     if (x <= 200) {
                         totalKwValue = x * 35;
-                        str = x + ',35';
+                        shotoor = [
+                            { value: x, cost: 35 }
+                        ];
                     }
                     else if (x > 200 && x <= 600) {
                         totalKwValue = (200 * 35) + ((x - 200) * 55);
-                        str = '200,35;' + (x - 200) + ',55';
+                        shotoor = [
+                            { value: x - 200, cost: 55 },
+                            { value: 200, cost: 35 }
+                        ];
                     }
                     else if (x > 600 && x <= 800) {
                         totalKwValue = (200 * 35) + (400 * 55) + ((x - 600) * 80);
-                        str = '200,35;400,55;' + (x - 600) + ',80';
+                        shotoor = [
+                            { value: x - 600, cost: 80 },
+                            { value: 400, cost: 55 },
+                            { value: 200, cost: 35 }
+                        ];
                     }
                     else if (x > 800 && x <= 1000) {
                         totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + ((x - 800) * 120);
-                        str = '200,35;400,55;200,80;' + (x - 800) + ',120';
+                        shotoor = [
+                            { value: x - 800, cost: 120 },
+                            { value: 200, cost: 80 },
+                            { value: 400, cost: 55 },
+                            { value: 200, cost: 35 }
+                        ];
                     }
                     else {
                         totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + (200 * 120) + ((x - 1000) * 200);
-                        str = '200,35;400,55;200,80;200,120;' + (x - 1000) + ',200';
+                        shotoor = [
+                            { value: x - 1000, cost: 200 },
+                            { value: 200, cost: 120 },
+                            { value: 200, cost: 80 },
+                            { value: 400, cost: 55 },
+                            { value: 200, cost: 35 }
+                        ];
                     }
 
                     this.totalKwValue = totalKwValue;
@@ -203,10 +229,7 @@
 
                     this.tadweer = this.totalBillValue - Math.floor(total);
 
-                    this.shotoor = str.split(';').map((v) => {
-                        let tempAr = v.split(',');
-                        return { value: tempAr[0], cost: tempAr[1] };
-                    }).reverse();
+                    this.shotoor = shotoor;
                 }
             }
         });
