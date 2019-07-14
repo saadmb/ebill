@@ -10,6 +10,7 @@
     <style>
         body {
             margin: 20px 0;
+            font-family: 'Calibri';
         }
 
         #shotoor td {
@@ -17,9 +18,13 @@
         }
 
         input[type="number"] {
-            width: 120px;
+            width: 70px;
+            direction: ltr;
+            font-size: 12pt;
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 
 <body>
@@ -28,16 +33,16 @@
 
             <table style="margin: 0 auto;">
                 <tr>
-                    <td>العداد الأساسي: </td>
+                    <td>الاستهلاك الأساسي (KW): </td>
                     <td>
                         <input v-model="mainKW" type="number" />
                     </td>
                     <td rowspan="2">
-                         <button @click="calculate" :disabled="!mainKW" style="font-size: 14pt;">احتساب</button>
+                        <button @click="calculate" :disabled="!mainKW" style="font-size: 12pt;">احتساب</button>
                     </td>
                 </tr>
                 <tr>
-                    <td>عداد المستأجر: </td>
+                    <td>استهلاك المحل (KW): </td>
                     <td>
                         <input v-model="renterKW" type="number" />
                     </td>
@@ -46,7 +51,7 @@
 
             <br>
 
-            <table v-if="totalBillValue" style="margin: 0 auto; border: 1px solid #666666; border-radius: 3px;">
+            <table v-if="totalBillValue" style="margin: 0 auto; border: 1px solid #666666; border-radius: 8px;">
                 <tr>
                     <td>
                         <table id="shotoor">
@@ -57,8 +62,8 @@
                             </tr>
                             <tr v-for="(item, index) in shotoor">
                                 <td>{{ item.value }}</td>
-                                <td>{{ item.cost }}</td>
-                                <td>{{ (item.value * item.cost) }}</td>
+                                <td>× {{ item.cost }}</td>
+                                <td>= {{ (item.value * item.cost) }}</td>
                                 <td v-if="index == shotoor.length - 1">+</td>
                             </tr>
                             <tr>
@@ -87,7 +92,7 @@
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td colspan="2">
-                                    مجموع خدمات الطاقة 
+                                    مجموع خدمات الطاقة
                                 </td>
                                 <td>{{ (totalKwValue + fee) }}</td>
                                 <td>=</td>
@@ -115,14 +120,14 @@
                             </tr>
                             <tr style="font-weight: bold; color:darkgreen">
                                 <td colspan="2">
-                                    الفاتورة الكاملة 
+                                    الفاتورة الأساسية
                                 </td>
                                 <td>{{ totalBillValue }}</td>
                                 <td>=</td>
                             </tr>
                             <tr style="font-weight: bold; color:firebrick;">
                                 <td colspan="2">
-                                   فاتورة المستأجر 
+                                    فاتورة المحل
                                 </td>
                                 <td>{{ renterBillValue }}</td>
                                 <td style="font-weight: normal;font-size: 12pt;padding:0">{{ renterRate }}</td>
@@ -134,7 +139,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
         var app = new Vue({
             el: '#app',
@@ -150,15 +154,15 @@
                 shotoor: []
             },
             computed: {
-                renterBillValue: function() {
+                renterBillValue: function () {
                     return Math.ceil((this.renterKW / this.mainKW) * this.totalBillValue);
                 },
-                renterRate: function() {
+                renterRate: function () {
                     return Math.round(this.renterKW * 100 / this.mainKW) + '%';
                 }
             },
             methods: {
-                calculate: function() {
+                calculate: function () {
                     let x = this.mainKW;
 
                     let totalKwValue = 0;
