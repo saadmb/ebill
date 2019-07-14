@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Electricity Bill Calculator</title>
 
     <style>
         body {
@@ -13,7 +13,14 @@
             font-family: 'Calibri';
         }
 
-        #shotoor td {
+        #bill {
+            margin: 0 auto;
+            border: 1px solid #666666;
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        #bill td {
             padding: 0 10px;
         }
 
@@ -51,89 +58,83 @@
 
             <br>
 
-            <table v-if="totalBillValue" style="margin: 0 auto; border: 1px solid #666666; border-radius: 8px;">
+            <table id="bill" v-if="totalBillValue">
+                <tr style="font-weight: bold;">
+                    <td>الشطر</td>
+                    <td>سعر الوحدة</td>
+                    <td>قيمة الشطور</td>
+                </tr>
+                <tr v-for="(item, index) in shotoor">
+                    <td>{{ item.value }}</td>
+                    <td>× {{ item.cost }}</td>
+                    <td>= {{ (item.value * item.cost) }}</td>
+                    <td v-if="index == shotoor.length - 1">+</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <hr>
+                    </td>
+                </tr>
+                <tr style="font-weight: bold;">
+                    <td colspan="2">
+                        مجموع قيمة الشطور
+                    </td>
+                    <td>{{ totalKwValue }}</td>
+                    <td>=</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        قيمة الرسوم الثابتة
+                    </td>
+                    <td>{{ fee }}</td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <hr>
+                    </td>
+                </tr>
+                <tr style="font-weight: bold;">
+                    <td colspan="2">
+                        مجموع خدمات الطاقة
+                    </td>
+                    <td>{{ (totalKwValue + fee) }}</td>
+                    <td>=</td>
+                </tr>
                 <tr>
                     <td>
-                        <table id="shotoor">
-                            <tr style="font-weight: bold;">
-                                <td>الشطر</td>
-                                <td>سعر الوحدة</td>
-                                <td>قيمة الشطور</td>
-                            </tr>
-                            <tr v-for="(item, index) in shotoor">
-                                <td>{{ item.value }}</td>
-                                <td>× {{ item.cost }}</td>
-                                <td>= {{ (item.value * item.cost) }}</td>
-                                <td v-if="index == shotoor.length - 1">+</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <hr>
-                                </td>
-                            </tr>
-                            <tr style="font-weight: bold;">
-                                <td colspan="2">
-                                    مجموع قيمة الشطور
-                                </td>
-                                <td>{{ totalKwValue }}</td>
-                                <td>=</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    قيمة الرسوم
-                                </td>
-                                <td>{{ fee }}</td>
-                                <td>+</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <hr>
-                                </td>
-                            </tr>
-                            <tr style="font-weight: bold;">
-                                <td colspan="2">
-                                    مجموع خدمات الطاقة
-                                </td>
-                                <td>{{ (totalKwValue + fee) }}</td>
-                                <td>=</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    TVA
-                                </td>
-                                <td>{{ tva + '%' }}</td>
-                                <td>{{ (totalKwValue + fee) * tva / 100 }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">طابع</td>
-                                <td>{{ stamp }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">تدوير الألف</td>
-                                <td>{{ tadweer }}</td>
-                                <td>+</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <hr>
-                                </td>
-                            </tr>
-                            <tr style="font-weight: bold; color:darkgreen">
-                                <td colspan="2">
-                                    الفاتورة الأساسية
-                                </td>
-                                <td>{{ totalBillValue }}</td>
-                                <td>=</td>
-                            </tr>
-                            <tr style="font-weight: bold; color:firebrick;">
-                                <td colspan="2">
-                                    فاتورة المحل
-                                </td>
-                                <td>{{ renterBillValue }}</td>
-                                <td style="font-weight: normal;font-size: 12pt;padding:0">{{ renterRate }}</td>
-                            </tr>
-                        </table>
+                        TVA
                     </td>
+                    <td>{{ tva + '%' }}</td>
+                    <td>{{ tvaValue }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">طابع</td>
+                    <td>{{ stamp }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">تدوير الألف</td>
+                    <td>{{ tadweer }}</td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <hr>
+                    </td>
+                </tr>
+                <tr style="font-weight: bold; color:darkgreen">
+                    <td colspan="2">
+                        الفاتورة الأساسية
+                    </td>
+                    <td>{{ totalBillValue }}</td>
+                    <td>=</td>
+                </tr>
+                <tr style="font-weight: bold; color:firebrick;">
+                    <td colspan="2">
+                        فاتورة المحل
+                    </td>
+                    <td>{{ renterBillValue }}</td>
+                    <td style="font-weight: normal;font-size: 12pt;padding:0">{{ renterRate }}</td>
                 </tr>
             </table>
         </div>
@@ -155,10 +156,15 @@
             },
             computed: {
                 renterBillValue: function () {
-                    return Math.ceil((this.renterKW / this.mainKW) * this.totalBillValue);
+                    let x = Math.ceil((this.renterKW / this.mainKW) * this.totalBillValue);
+                    return (x >= 0 && x <= this.totalBillValue) ? x : 0;
                 },
                 renterRate: function () {
-                    return Math.round(this.renterKW * 100 / this.mainKW) + '%';
+                    let x = Math.round(this.renterKW * 100 / this.mainKW);
+                    return ((x >= 0 && x <= 100) ? x : 0) + '%';
+                },
+                tvaValue: function () {
+                    return Math.round((this.totalKwValue + this.fee) * this.tva / 100);
                 }
             },
             methods: {
