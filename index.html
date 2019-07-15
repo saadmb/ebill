@@ -178,47 +178,36 @@
                     let x = this.mainKW;
 
                     let totalKwValue = 0;
-                    let shotoor = [];
+                    let shotoor = [
+                        { value: 200, cost: 120 },
+                        { value: 200, cost: 80 },
+                        { value: 400, cost: 55 },
+                        { value: 200, cost: 35 }
+                    ];
 
                     if (x <= 200) {
                         totalKwValue = x * 35;
-                        shotoor = [
-                            { value: x, cost: 35 }
-                        ];
+                        shotoor.splice(0, shotoor.length);
+                        shotoor.unshift({ value: x, cost: 35 });
                     }
                     else if (x > 200 && x <= 600) {
                         totalKwValue = (200 * 35) + ((x - 200) * 55);
-                        shotoor = [
-                            { value: x - 200, cost: 55 },
-                            { value: 200, cost: 35 }
-                        ];
+                        shotoor.splice(0, shotoor.length - 1);
+                        shotoor.unshift({ value: x - 200, cost: 55 });
                     }
                     else if (x > 600 && x <= 800) {
                         totalKwValue = (200 * 35) + (400 * 55) + ((x - 600) * 80);
-                        shotoor = [
-                            { value: x - 600, cost: 80 },
-                            { value: 400, cost: 55 },
-                            { value: 200, cost: 35 }
-                        ];
+                        shotoor.splice(0, shotoor.length - 2);
+                        shotoor.unshift({ value: x - 600, cost: 80 });
                     }
                     else if (x > 800 && x <= 1000) {
                         totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + ((x - 800) * 120);
-                        shotoor = [
-                            { value: x - 800, cost: 120 },
-                            { value: 200, cost: 80 },
-                            { value: 400, cost: 55 },
-                            { value: 200, cost: 35 }
-                        ];
+                        shotoor.splice(0, shotoor.length - 3);
+                        shotoor.unshift({ value: x - 800, cost: 120 });
                     }
                     else {
                         totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + (200 * 120) + ((x - 1000) * 200);
-                        shotoor = [
-                            { value: x - 1000, cost: 200 },
-                            { value: 200, cost: 120 },
-                            { value: 200, cost: 80 },
-                            { value: 400, cost: 55 },
-                            { value: 200, cost: 35 }
-                        ];
+                        shotoor.unshift({ value: x - 1000, cost: 200 });
                     }
 
                     this.totalKwValue = totalKwValue;
