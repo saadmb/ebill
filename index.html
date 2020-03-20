@@ -51,7 +51,7 @@
                         <input v-model="mainKW" type="number" />
                     </td>
                     <td rowspan="2">
-                        <button @click="calculate" :disabled="!mainKW">💸</button>
+                        <button @click="display" :disabled="!mainKW">💸</button>
                     </td>
                 </tr>
                 <tr>
@@ -137,10 +137,10 @@
                 </tr>
                 <tr style="font-weight: bold; color:firebrick;">
                     <td colspan="2">
-                        فاتورة المحل
+                        الفاتورة المحل
                     </td>
                     <td>{{ renterBillValue }}</td>
-                    <td style="font-weight: normal;font-size: 12pt;padding:0">{{ renterRate }}</td>
+                    <td style="font-weight: normal;font-size: 12pt;padding:0">{{ isRelative ? renterRate : null }}</td>
                 </tr>
             </table>
         </div>
@@ -158,11 +158,23 @@
                 tva: 11,
                 stamp: 1000,
                 tadweer: null,
-                shotoor: []
+                shotoor: [],
+                relative: false
             },
             computed: {
                 renterBillValue: function () {
-                    let x = Math.ceil((this.renterKW / this.mainKW) * this.totalBillValue);
+                    //Relative value
+                    let x1 = Math.ceil((this.renterKW / this.mainKW) * this.totalBillValue);
+
+                    let mainOrgKW = this.mainKW - this.renterKW;
+                    //Origin value
+                    let x2 = Math.ceil(this.totalBillValue - this.calculate(mainOrgKW).totalBillValue);
+
+                    this.relative = x1 >= x2;
+
+                    console.log('relative: ' + x1 + ', origin: ' + x2);
+
+                    let x = Math.max(x1, x2);
                     return (x >= 0 && x <= this.totalBillValue) ? x : 0;
                 },
                 renterRate: function () {
@@ -171,12 +183,13 @@
                 },
                 tvaValue: function () {
                     return Math.round((this.totalKwValue + this.fee) * this.tva / 100);
+                },
+                isRelative: function() {
+                    return this.relative;
                 }
             },
             methods: {
-                calculate: function () {
-                    let x = this.mainKW;
-
+                calculate: function (x) {
                     let totalKwValue = 0;
                     let shotoor = [
                         { value: 200, cost: 120 },
@@ -210,15 +223,26 @@
                         shotoor.unshift({ value: x - 1000, cost: 200 });
                     }
 
-                    this.totalKwValue = totalKwValue;
-
                     let total = ((totalKwValue + this.fee) * (1 + (this.tva / 100))) + 1000;
 
-                    this.totalBillValue = Math.ceil(total / 1000) * 1000;
+                    let totalBillValue = Math.ceil(total / 1000) * 1000;
 
-                    this.tadweer = this.totalBillValue - Math.floor(total);
+                    let tadweer = totalBillValue - Math.floor(total);
 
-                    this.shotoor = shotoor;
+                    return {
+                        totalKwValue,
+                        totalBillValue,
+                        tadweer,
+                        shotoor
+                    };
+                },
+                display: function () {
+                    let o = this.calculate(this.mainKW);
+
+                    this.totalKwValue = o.totalKwValue;
+                    this.totalBillValue = o.totalBillValue;
+                    this.tadweer = o.tadweer;
+                    this.shotoor = o.shotoor;
                 }
             }
         });
