@@ -9,7 +9,7 @@
 
     <style>
         body {
-            margin: 20px 0;
+            margin: 0;
             font-family: 'Calibri';
         }
 
@@ -35,6 +35,14 @@
             width: 56px;
             height: 56px;
         }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            background: #f1f1f1;
+            padding: 10px;
+            margin-top: 0;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -44,20 +52,22 @@
     <div id="app">
         <div style="width: 400px; margin: 0 auto; font-size: 16pt; direction:rtl;">
 
+            <p class="title">⚡ احتساب فاتورة الكهرباء عن شهرين ⚡</p>
+
             <table style="margin: 0 auto; width: 90%;">
                 <tr>
                     <td>الاستهلاك الأساسي (KW): </td>
                     <td>
-                        <input v-model="mainKW" type="number" />
+                        <input v-model="mainKW" type="number" tabindex="1" :autofocus="'autofocus'" />
                     </td>
                     <td rowspan="2">
-                        <button @click="display" :disabled="!mainKW">💸</button>
+                        <button @click="display" :disabled="!mainKW" tabindex="3">💸</button>
                     </td>
                 </tr>
                 <tr>
                     <td>استهلاك المستأجر (KW): </td>
                     <td>
-                        <input v-model="renterKW" type="number" />
+                        <input v-model="renterKW" type="number" tabindex="2" />
                     </td>
                 </tr>
             </table>
@@ -140,13 +150,42 @@
                         فاتورة المستأجر
                     </td>
                     <td>{{ renterBillValue }}</td>
-                    <td style="font-weight: normal;font-size: 12pt;padding:0">{{ isRelative ? renterRate : null }}</td>
+                    <td style="font-weight: normal;font-size: 12pt;padding:0"></td> <!-- {{ isRelative ? renterRate : null }} -->
                 </tr>
             </table>
+
+            <div style="font-size: 18px; margin: 30px 10px; color: #333333" v-if="totalBillValue">
+                <u>طريقة احتساب فاتورة المستأجر:</u>
+                <br />
+                <ul style="list-style: none;">
+                    <li>قيمة الاستهلاك الأساسي ← <b>A</b></li>
+                    <li>قيمة استهلاك المستأجر ← <b>B</b></li>
+                    <li>قيمة الاستهلاك من دون المستأجر ← <b>A - B</b></li>
+                    <li>قيمة الفاتورة الأساسية ← <b>C<sub>A</sub></b></li>
+                    <li>قيمة الفاتورة الأساسية من دون المستأجر ← <b>C<sub>A - B</sub></b></li>
+                    <li>قيمة فاتورة المستأجر ← <b>X</b></li>
+                </ul>
+                <div style="text-align: center;">
+                    <b>X<sub>1</sub> = (B ÷ A) &times; C<sub>A</sub></b>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>X<sub>2</sub> = C<sub>A</sub> - C<sub>A - B</sub></b>
+                    <br /><br />
+                    <!-- <b>[ القيمة الأكبر ما بين X<sub>1</sub>&nbsp;&nbsp;و&nbsp;&nbsp;X<sub>2</sub> ] = X</b> -->
+                    <b>X = (X<sub>1</sub> + X<sub>2</sub>) ÷ 2</b>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        document.querySelector('input').focus();
+
+        window.onkeydown = function (e) {
+            if (e.key == 'Enter') {
+                document.querySelector('button').click();
+            }
+        }
+
         var app = new Vue({
             el: '#app',
             data: {
@@ -163,6 +202,9 @@
             },
             computed: {
                 renterBillValue: function () {
+                    if(this.renterKW < 0 || this.renterKW > 9999)
+                        return 0;
+
                     //Relative value
                     let x1 = Math.ceil((this.renterKW / this.mainKW) * this.totalBillValue);
 
@@ -174,7 +216,7 @@
 
                     console.log('relative: ' + x1 + ', origin: ' + x2);
 
-                    let x = Math.max(x1, x2);
+                    let x = Math.ceil((x1 + x2) / 2); //Math.max(x1, x2);
                     return (x >= 0 && x <= this.totalBillValue) ? x : 0;
                 },
                 renterRate: function () {
@@ -184,7 +226,7 @@
                 tvaValue: function () {
                     return Math.round((this.totalKwValue + this.fee) * this.tva / 100);
                 },
-                isRelative: function() {
+                isRelative: function () {
                     return this.relative;
                 }
             },
@@ -237,12 +279,14 @@
                     };
                 },
                 display: function () {
-                    let o = this.calculate(this.mainKW);
+                    if (this.mainKW > 0 && this.mainKW < 10000) {
+                        let o = this.calculate(this.mainKW);
 
-                    this.totalKwValue = o.totalKwValue;
-                    this.totalBillValue = o.totalBillValue;
-                    this.tadweer = o.tadweer;
-                    this.shotoor = o.shotoor;
+                        this.totalKwValue = o.totalKwValue;
+                        this.totalBillValue = o.totalBillValue;
+                        this.tadweer = o.tadweer;
+                        this.shotoor = o.shotoor;
+                    }
                 }
             }
         });
