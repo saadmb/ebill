@@ -30,10 +30,10 @@
             font-size: 12pt;
         }
 
-        button {
-            font-size: 18pt;
-            width: 56px;
-            height: 56px;
+        .button {
+            font-size: 30px;
+            text-align: center;
+            cursor: pointer;
         }
 
         .title {
@@ -56,18 +56,18 @@
 
             <table style="margin: 0 auto; width: 90%;">
                 <tr>
-                    <td>الاستهلاك الأساسي (KW): </td>
+                    <td>الاستهلاك الأساسي : </td>
                     <td>
-                        <input v-model="mainKW" type="number" tabindex="1" :autofocus="'autofocus'" />
+                        <span style="font-size: 18px;">kW</span> <input v-model="mainKW" type="number" tabindex="1" :autofocus="'autofocus'" />
                     </td>
                     <td rowspan="2">
-                        <button @click="display" :disabled="!mainKW" tabindex="3">💸</button>
+                        <div class="button" title="Calculate" @click="display" tabindex="3">💸</div>
                     </td>
                 </tr>
                 <tr>
-                    <td>استهلاك المستأجر (KW): </td>
+                    <td>استهلاك المستأجر : </td>
                     <td>
-                        <input v-model="renterKW" type="number" tabindex="2" />
+                        <span style="font-size: 18px;">kW</span> <input v-model="renterKW" type="number" tabindex="2" />
                     </td>
                 </tr>
             </table>
@@ -171,7 +171,7 @@
                     <b>X<sub>2</sub> = C<sub>A</sub> - C<sub>A - B</sub></b>
                     <br /><br />
                     <!-- <b>[ القيمة الأكبر ما بين X<sub>1</sub>&nbsp;&nbsp;و&nbsp;&nbsp;X<sub>2</sub> ] = X</b> -->
-                    <b>X = (X<sub>1</sub> + X<sub>2</sub>) ÷ 2</b>
+                    <b style="background: #dddddd; padding: 5px; border: 1px dotted grey;">X = (X<sub>1</sub> + X<sub>2</sub>) ÷ 2</b>
                 </div>
             </div>
         </div>
@@ -182,7 +182,7 @@
 
         window.onkeydown = function (e) {
             if (e.key == 'Enter') {
-                document.querySelector('button').click();
+                document.querySelector('.button').click();
             }
         }
 
