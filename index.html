@@ -83,7 +83,7 @@
                 <tr v-for="(item, index) in shotoor">
                     <td>{{ item.value }}</td>
                     <td>× {{ item.cost }}</td>
-                    <td>= {{ (item.value * item.cost) }}</td>
+                    <td>= {{ (item.value * item.cost).toLocaleString() }}</td>
                     <td v-if="index == shotoor.length - 1">+</td>
                 </tr>
                 <tr>
@@ -95,14 +95,14 @@
                     <td colspan="2">
                         مجموع قيمة الشطور
                     </td>
-                    <td>{{ totalKwValue }}</td>
+                    <td>{{ totalKwValue.toLocaleString() }}</td>
                     <td>=</td>
                 </tr>
                 <tr>
                     <td colspan="2">
                         قيمة الرسوم الثابتة
                     </td>
-                    <td>{{ fee }}</td>
+                    <td>{{ fee.toLocaleString() }}</td>
                     <td>+</td>
                 </tr>
                 <tr>
@@ -114,7 +114,7 @@
                     <td colspan="2">
                         مجموع خدمات الطاقة
                     </td>
-                    <td>{{ (totalKwValue + fee) }}</td>
+                    <td>{{ (totalKwValue + fee).toLocaleString() }}</td>
                     <td>=</td>
                 </tr>
                 <tr>
@@ -122,11 +122,11 @@
                         TVA
                     </td>
                     <td>{{ tva + '%' }}</td>
-                    <td>{{ tvaValue }}</td>
+                    <td>{{ tvaValue.toLocaleString() }}</td>
                 </tr>
                 <tr>
                     <td colspan="2">طابع</td>
-                    <td>{{ stamp }}</td>
+                    <td>{{ stamp.toLocaleString() }}</td>
                 </tr>
                 <tr>
                     <td colspan="2">تدوير الألف</td>
@@ -142,14 +142,14 @@
                     <td colspan="2">
                         الفاتورة الأساسية
                     </td>
-                    <td>{{ totalBillValue }}</td>
+                    <td>{{ totalBillValue.toLocaleString() }}</td>
                     <td>=</td>
                 </tr>
                 <tr style="font-weight: bold; color:firebrick;">
                     <td colspan="2">
                         فاتورة المستأجر
                     </td>
-                    <td>{{ renterBillValue }}</td>
+                    <td>{{ renterBillValue.toLocaleString() }}</td>
                     <td style="font-weight: normal;font-size: 12pt;padding:0"></td> <!-- {{ isRelative ? renterRate : null }} -->
                 </tr>
             </table>
