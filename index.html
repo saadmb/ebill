@@ -170,8 +170,10 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <b>X<sub>2</sub> = C<sub>A</sub> - C<sub>A - B</sub></b>
                     <br /><br />
-                    <!-- <b>[ القيمة الأكبر ما بين X<sub>1</sub>&nbsp;&nbsp;و&nbsp;&nbsp;X<sub>2</sub> ] = X</b> -->
-                    <b style="background: #dddddd; padding: 5px; border: 1px dotted grey;">X = (X<sub>1</sub> + X<sub>2</sub>) ÷ 2</b>
+                    <b style="background: #dddddd; padding: 5px; border: 1px dotted grey;">
+                        <!-- X = (X<sub>1</sub> + X<sub>2</sub>) ÷ 2 -->
+                        [ القيمة الأكبر ما بين X<sub>1</sub>&nbsp;&nbsp;و&nbsp;&nbsp;X<sub>2</sub> ] = X
+                    </b>
                 </div>
             </div>
         </div>
@@ -216,7 +218,9 @@
 
                     console.log('relative: ' + x1 + ', origin: ' + x2);
 
-                    let x = Math.ceil((x1 + x2) / 2); //Math.max(x1, x2);
+                    //let x = Math.ceil((x1 + x2) / 2); 
+                    let x = Math.max(x1, x2);
+                    
                     return (x >= 0 && x <= this.totalBillValue) ? x : 0;
                 },
                 renterRate: function () {
