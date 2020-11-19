@@ -149,7 +149,18 @@
                     <td colspan="2">
                         فاتورة المستأجر
                     </td>
-                    <td>{{ renterBillValue.toLocaleString() }}</td>
+                    <td>
+                        {{ renterBillValue[0].toLocaleString() }}
+                        <span style="font-size: 14px;">&nbsp;avg</span>
+                    </td>
+                    <td style="font-weight: normal;font-size: 12pt;padding:0"></td> <!-- {{ isRelative ? renterRate : null }} -->
+                </tr>
+                <tr style="font-weight: bold; color:firebrick;">
+                    <td colspan="2"></td>
+                    <td>
+                        {{ renterBillValue[1].toLocaleString() }}
+                        <span style="font-size: 14px;">&nbsp;max</span>
+                    </td>
                     <td style="font-weight: normal;font-size: 12pt;padding:0"></td> <!-- {{ isRelative ? renterRate : null }} -->
                 </tr>
             </table>
@@ -171,8 +182,11 @@
                     <b>X<sub>2</sub> = C<sub>A</sub> - C<sub>A - B</sub></b>
                     <br /><br />
                     <b style="background: #dddddd; padding: 5px; border: 1px dotted grey;">
-                        <!-- X = (X<sub>1</sub> + X<sub>2</sub>) ÷ 2 -->
-                        [ القيمة الأكبر ما بين X<sub>1</sub>&nbsp;&nbsp;و&nbsp;&nbsp;X<sub>2</sub> ] = X
+                        X<sub>avg</sub> = (X<sub>1</sub> + X<sub>2</sub>) ÷ 2
+                    </b>
+                    <p>أو</p>
+                    <b style="background: #dddddd; padding: 5px; border: 1px dotted grey;">
+                        [ القيمة الأكبر ما بين X<sub>1</sub>&nbsp;&nbsp;و&nbsp;&nbsp;X<sub>2</sub> ] = X<sub>max</sub>
                     </b>
                 </div>
             </div>
@@ -218,10 +232,10 @@
 
                     console.log('relative: ' + x1 + ', origin: ' + x2);
 
-                    //let x = Math.ceil((x1 + x2) / 2); 
-                    let x = Math.max(x1, x2);
+                    let x = Math.round((Math.ceil((x1 + x2) / 2)) / 1000) * 1000; 
+                    let y = Math.round((Math.max(x1, x2)) / 1000) * 1000;
                     
-                    return (x >= 0 && x <= this.totalBillValue) ? x : 0;
+                    return (x >= 0 && x <= this.totalBillValue) ? [x, y] : 0;
                 },
                 renterRate: function () {
                     let x = Math.round(this.renterKW * 100 / this.mainKW);
