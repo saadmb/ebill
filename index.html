@@ -202,19 +202,20 @@
             }
         }
 
-        var app = new Vue({
-            el: '#app',
-            data: {
-                mainKW: null,
-                renterKW: null,
-                totalKwValue: null,
-                totalBillValue: null,
-                fee: 31600,
-                tva: 11,
-                stamp: 1000,
-                tadweer: null,
-                shotoor: [],
-                relative: false
+        const app = Vue.createApp({
+            data() {
+                return {
+                    mainKW: null,
+                    renterKW: null,
+                    totalKwValue: null,
+                    totalBillValue: null,
+                    fee: 31600,
+                    tva: 11,
+                    stamp: 1000,
+                    tadweer: null,
+                    shotoor: [],
+                    relative: false,
+                };
             },
             computed: {
                 renterBillValue: function () {
@@ -308,6 +309,8 @@
                 }
             }
         });
+        
+        app.mount('#app');
     </script>
 </body>
 
