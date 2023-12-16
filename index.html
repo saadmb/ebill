@@ -209,9 +209,9 @@
                     renterKW: null,
                     totalKwValue: null,
                     totalBillValue: null,
-                    fee: 31600,
+                    fee: 2133468,
                     tva: 11,
-                    stamp: 1000,
+                    stamp: 5000,
                     tadweer: null,
                     shotoor: [],
                     relative: false,
@@ -251,44 +251,32 @@
             },
             methods: {
                 calculate: function (x) {
-                    let totalKwValue = 0;
-                    let shotoor = [
-                        { value: 200, cost: 120 },
-                        { value: 200, cost: 80 },
-                        { value: 400, cost: 55 },
-                        { value: 200, cost: 35 }
+                    const tiers = [
+                        { threshold: 200, cost: 10344 },
+                        { threshold: 600, cost: 55 },
+                        { threshold: 800, cost: 80 },
+                        { threshold: 1000, cost: 120 },
+                        { threshold: Infinity, cost: 200 }
                     ];
 
-                    if (x <= 200) {
-                        totalKwValue = x * 35;
-                        shotoor.splice(0, shotoor.length);
-                        shotoor.unshift({ value: x, cost: 35 });
-                    }
-                    else if (x > 200 && x <= 600) {
-                        totalKwValue = (200 * 35) + ((x - 200) * 55);
-                        shotoor.splice(0, shotoor.length - 1);
-                        shotoor.unshift({ value: x - 200, cost: 55 });
-                    }
-                    else if (x > 600 && x <= 800) {
-                        totalKwValue = (200 * 35) + (400 * 55) + ((x - 600) * 80);
-                        shotoor.splice(0, shotoor.length - 2);
-                        shotoor.unshift({ value: x - 600, cost: 80 });
-                    }
-                    else if (x > 800 && x <= 1000) {
-                        totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + ((x - 800) * 120);
-                        shotoor.splice(0, shotoor.length - 3);
-                        shotoor.unshift({ value: x - 800, cost: 120 });
-                    }
-                    else {
-                        totalKwValue = (200 * 35) + (400 * 55) + (200 * 80) + (200 * 120) + ((x - 1000) * 200);
-                        shotoor.unshift({ value: x - 1000, cost: 200 });
+                    let totalKwValue = 0;
+                    let costAccumulator = 0;
+                    let shotoor = [];
+
+                    for (const tier of tiers) {
+                        const consumption = Math.min(x - costAccumulator, tier.threshold - costAccumulator);
+                        totalKwValue += consumption * tier.cost;
+                        shotoor.unshift({ value: consumption, cost: tier.cost });
+                        costAccumulator += consumption;
+
+                        if (x <= tier.threshold) {
+                            break;
+                        }
                     }
 
-                    let total = ((totalKwValue + this.fee) * (1 + (this.tva / 100))) + 1000;
-
-                    let totalBillValue = Math.ceil(total / 1000) * 1000;
-
-                    let tadweer = totalBillValue - Math.floor(total);
+                    const total = ((totalKwValue + this.fee) * (1 + (this.tva / 100))) + this.stamp;
+                    const totalBillValue = Math.ceil(total / 1000) * 1000;
+                    const tadweer = totalBillValue - Math.floor(total);
 
                     return {
                         totalKwValue,
